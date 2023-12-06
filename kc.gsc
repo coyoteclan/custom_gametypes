@@ -129,7 +129,19 @@ main()
 	setarchive(true);*/
 }
 
-Callback_StartGameType()
+gtRegister( register, post )
+{
+	if ( isDefined( post ) )
+		return;
+	
+	[[ register ]](	   "StartGameType", ::StartGameType );
+	[[ register ]](	   "PlayerConnect", codam\callbacks::PlayerConnect );
+	[[ register ]]( "PlayerDisconnect", codam\callbacks::PlayerDisconnect );
+	[[ register ]](     "PlayerDamage", codam\callbacks::PlayerDamage );
+	[[ register ]](     "PlayerKilled", codam\callbacks::PlayerKilled );
+}
+
+StartGameType()
 {
 	// defaults if not defined in level script
 	if(!isdefined(game["allies"]))
