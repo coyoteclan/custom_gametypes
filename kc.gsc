@@ -139,11 +139,16 @@ gtRegister( register, post )
 	[[ register ]]( "PlayerDisconnect", codam\callbacks::PlayerDisconnect );
 	[[ register ]](     "PlayerDamage", codam\callbacks::PlayerDamage );
 	[[ register ]](     "PlayerKilled", codam\callbacks::PlayerKilled );
+
+	[[ register ]]( "finishPlayerKilled", codam\callbacks::finishPlayerKilled );
+	[[ register ]](       "gt_startGame", ::startGame );
 }
 
-StartGameType()
+StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
+				b0, b1, b2, b3, b4, b5, b6, b7, b8, b9 )
 {
-	// defaults if not defined in level script
+	codam\init::main();
+	/*defaults if not defined in level script
 	if(!isdefined(game["allies"]))
 		game["allies"] = "american";
 	if(!isdefined(game["axis"]))
@@ -171,7 +176,7 @@ StartGameType()
 	game["menu_quickstatements"] = "quickstatements";
 	game["menu_quickresponses"] = "quickresponses";
 	game["headicon_allies"] = "gfx/hud/headicon@allies.tga";
-	game["headicon_axis"] = "gfx/hud/headicon@axis.tga";
+	game["headicon_axis"] = "gfx/hud/headicon@axis.tga";*/
 
 	precacheString(&"MPSCRIPT_PRESS_ACTIVATE_TO_RESPAWN");
 	precacheString(&"MPSCRIPT_KILLCAM");
@@ -179,25 +184,25 @@ StartGameType()
 
 	precacheModel("xmodel/legbag_objective");
 
-	precacheMenu(game["menu_team"]);
+	/*precacheMenu(game["menu_team"]);
 	precacheMenu(game["menu_weapon_allies"]);
 	precacheMenu(game["menu_weapon_axis"]);
 	precacheMenu(game["menu_viewmap"]);
 	precacheMenu(game["menu_callvote"]);
 	precacheMenu(game["menu_quickcommands"]);
 	precacheMenu(game["menu_quickstatements"]);
-	precacheMenu(game["menu_quickresponses"]);
+	precacheMenu(game["menu_quickresponses"]);*/
 
 	precacheShader("black");
 	precacheShader("hudScoreboard_mp");
 	precacheShader("gfx/hud/hud@mpflag_spectator.tga");
-	precacheStatusIcon("gfx/hud/hud@status_dead.tga");
-	precacheStatusIcon("gfx/hud/hud@status_connecting.tga");
-	precacheHeadIcon(game["headicon_allies"]);
-	precacheHeadIcon(game["headicon_axis"]);
-	precacheItem("item_health");
+	//precacheStatusIcon("gfx/hud/hud@status_dead.tga");
+	//precacheStatusIcon("gfx/hud/hud@status_connecting.tga");
+	//precacheHeadIcon(game["headicon_allies"]);
+	//precacheHeadIcon(game["headicon_axis"]);
+	//precacheItem("item_health");
 
-	maps\mp\gametypes\_teams::modeltype();
+	/*maps\mp\gametypes\_teams::modeltype();
 	maps\mp\gametypes\_teams::precache();
 	maps\mp\gametypes\_teams::scoreboard();
 	maps\mp\gametypes\_teams::initGlobalCvars();
@@ -207,7 +212,8 @@ StartGameType()
 	
 	thread startGame();
 	thread addBotClients(); // For development testing
-	thread updateScriptCvars();
+	thread updateScriptCvars();*/
+	thread 
 }
 
 Callback_PlayerConnect()
