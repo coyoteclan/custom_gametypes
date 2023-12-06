@@ -67,7 +67,12 @@ Spectators spawn randomly at one of these positions.
 
 main()
 {
-	level.callbackStartGameType = ::Callback_StartGameType;
+	codam\utils::_debug( "I'M IN C_KC" );
+	register = codam\init::main( ::gtRegister, "kc" );
+
+	[[ level.gtd_call ]]( "registerSpawn", "mp_teamdeathmatch_spawn", "nearteam" );
+	return;
+	/*level.callbackStartGameType = ::Callback_StartGameType;
 	level.callbackPlayerConnect = ::Callback_PlayerConnect;
 	level.callbackPlayerDisconnect = ::Callback_PlayerDisconnect;
 	level.callbackPlayerDamage = ::Callback_PlayerDamage;
@@ -121,7 +126,7 @@ main()
 	else
 		maps\mp\_utility::error("NO " + spawnpointname + " SPAWNPOINTS IN MAP");
 		
-	setarchive(true);
+	setarchive(true);*/
 }
 
 Callback_StartGameType()
