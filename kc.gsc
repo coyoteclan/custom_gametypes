@@ -931,7 +931,7 @@ waitRemoveRespawnText(message)
 	self notify("remove_respawntext");
 }
 
-/*killcam(attackerNum, delay)
+killcam(attackerNum, delay)
 {
 	self endon("spawned");
 
@@ -1073,7 +1073,7 @@ spawnedKillcamCleanup()
 
 	self waittill("spawned");
 	self removeKillcamElements();
-}*/
+}
 
 startGame()
 {
