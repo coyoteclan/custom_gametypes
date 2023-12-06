@@ -142,7 +142,7 @@ gtRegister( register, post )
 
 	[[ register ]]( "finishPlayerKilled", codam\callbacks::finishPlayerKilled );
 	[[ register ]](       "gt_startGame", ::startGame );
-	[[ register ]]( "P")
+	[[ register ]](             "endMap", ::endMap );
 }
 
 StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
@@ -1309,39 +1309,4 @@ dropHealth()
 	
 	if(level.healthqueuecurrent >= 16)
 		level.healthqueuecurrent = 0;
-}
-
-addBotClients()
-{
-	wait 5;
-	
-	for(;;)
-	{
-		if(getCvarInt("scr_numbots") > 0)
-			break;
-		wait 1;
-	}
-	
-	iNumBots = getCvarInt("scr_numbots");
-	for(i = 0; i < iNumBots; i++)
-	{
-		ent[i] = addtestclient();
-		wait 0.5;
-
-		if(isPlayer(ent[i]))
-		{
-			if(i & 1)
-			{
-				ent[i] notify("menuresponse", game["menu_team"], "axis");
-				wait 0.5;
-				ent[i] notify("menuresponse", game["menu_weapon_axis"], "kar98k_mp");
-			}
-			else
-			{
-				ent[i] notify("menuresponse", game["menu_team"], "allies");
-				wait 0.5;
-				ent[i] notify("menuresponse", game["menu_weapon_allies"], "springfield_mp");
-			}
-		}
-	}
 }
