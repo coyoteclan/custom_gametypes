@@ -138,10 +138,11 @@ gtRegister( register, post )
 	[[ register ]](	   "PlayerConnect", codam\callbacks::PlayerConnect );
 	[[ register ]]( "PlayerDisconnect", codam\callbacks::PlayerDisconnect );
 	[[ register ]](     "PlayerDamage", codam\callbacks::PlayerDamage );
-	[[ register ]](     "PlayerKilled", codam\callbacks::PlayerKilled );
+	[[ register ]](     "PlayerKilled", ::PlayerKilled );
 
 	[[ register ]]( "finishPlayerKilled", codam\callbacks::finishPlayerKilled );
 	[[ register ]](       "gt_startGame", ::startGame );
+	[[ register ]]( "P")
 }
 
 StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
@@ -213,10 +214,14 @@ StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 	thread startGame();
 	thread addBotClients(); // For development testing
 	thread updateScriptCvars();*/
-	thread 
+	codam\init::main();
+	game[ "gamestarted" ] = true;
+	[[ level.gtd_call ]]( "setClientNameMode", "autochange" );
+	thread [[ level.gtd_call ]]( "gtd_startGame" );
+	return;
 }
 
-Callback_PlayerConnect()
+PlayerConnect()
 {
 	self.statusicon = "gfx/hud/hud@status_connecting.tga";
 	self waittill("begin");
@@ -572,7 +577,7 @@ Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sW
 	}
 }
 
-Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc)
+PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc)
 {
 	self endon("spawned");
 	
