@@ -221,7 +221,7 @@ StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
 	return;
 }
 
-PlayerConnect()
+/*PlayerConnect()
 {
 	self.statusicon = "gfx/hud/hud@status_connecting.tga";
 	self waittill("begin");
@@ -575,7 +575,7 @@ Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sW
 
 		logPrint("D;" + lpselfnum + ";" + lpselfteam + ";" + lpselfname + ";" + lpattacknum + ";" + lpattackerteam + ";" + lpattackname + ";" + sWeapon + ";" + iDamage + ";" + sMeansOfDeath + ";" + sHitLoc + "\n");
 	}
-}
+}*/
 
 PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc)
 {
@@ -931,7 +931,7 @@ waitRemoveRespawnText(message)
 	self notify("remove_respawntext");
 }
 
-killcam(attackerNum, delay)
+/*killcam(attackerNum, delay)
 {
 	self endon("spawned");
 
@@ -1073,7 +1073,7 @@ spawnedKillcamCleanup()
 
 	self waittill("spawned");
 	self removeKillcamElements();
-}
+}*/
 
 startGame()
 {
