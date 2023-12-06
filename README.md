@@ -1,4 +1,4 @@
 # Goal
-- CoDaMize these gametypes
+- CoDaMize these gametypes:
 lts, htf and kc from awe
 dom from UO
