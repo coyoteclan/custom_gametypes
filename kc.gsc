@@ -142,11 +142,13 @@ gtRegister( register, post )
 
 	[[ register ]](   "finishPlayerKilled", codam\callbacks::finishPlayerKilled );
 	[[ register ]](         "gt_startGame", ::startGame );
+	[[ register ]](	      "gt_autoBalance", ::autoBalance );
 	[[ register ]](               "endMap", ::endMap );
 	[[ register ]](       "gt_spawnPlayer", ::spawnPlayer );
 	[[ register ]](    "gt_spawnSpectator", ::spawnSpectator );
 	[[ register ]]( "gt_spawnIntermission", ::spawnIntermission );
 	[[ register ]](           "gt_respawn", ::respawn );
+	[[ register ]](       "gt_menuHandler", ::menuHandler );
 }
 
 StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
@@ -1196,7 +1198,7 @@ checkScoreLimit()
 	endMap();
 }
 
-updateScriptCvars()
+/*updateScriptCvars()
 {
 	for(;;)
 	{
@@ -1291,7 +1293,7 @@ updateScriptCvars()
 
 		wait 1;
 	}
-}
+}*/
 
 printJoinedTeam(team)
 {
@@ -1313,4 +1315,172 @@ dropHealth()
 	
 	if(level.healthqueuecurrent >= 16)
 		level.healthqueuecurrent = 0;
+}
+
+menuHandler( menu, a1, a2, a3, a4, a5, a6, a7, a8, a9,
+			b0, b1, b2, b3, b4, b5, b6, b7, b8, b9 )
+{
+	self endon( "end_player" );
+
+	for (;;)
+	{
+		resp = self [[ level.gtd_call ]]( "menuHandler", menu );
+
+		if ( !isdefined( resp ) || ( resp.size < 2 ) ||
+		     !isdefined( resp[ 0 ] ) || !isdefined( resp[ 1 ] ) )
+		{
+			// Shouldn't happen ... but just in case
+			wait( 1 );
+			continue;
+		}
+
+		val = resp[ 1 ];
+		switch ( resp[ 0 ] )
+		{
+		  case "team":
+		  	switch ( val )
+		  	{
+		  	  case "spectator":
+				if ( self.pers[ "team" ] != "spectator" )
+					self [[ level.gtd_call ]](
+								"goSpectate" );
+
+				menu = undefined;
+				break;
+		  	  default:
+		  	  	if ( ( val == "" ) ||
+		  	  	     ![[ level.gtd_call ]]( "isTeam", val ) )
+				{
+					// Team not playing, try again!
+					break;
+				}
+
+				if ( isdefined( self.pers[ "team" ] ) &&
+				     ( val == self.pers[ "team" ] ) )
+				{
+					// Same team selected!
+					menu = undefined;
+					break;
+				}
+
+				// Still alive ... changing teams?
+				if ( self.sessionstate == "playing" )
+					self [[ level.gtd_call ]]( "suicide" );
+
+				// Okay, selected new team ...
+				self notify( "end_respawn" );
+
+				self.pers[ "team" ] = val;
+				self.pers[ "weapon" ] = undefined;
+				self.pers[ "savedmodel" ] = undefined;
+
+				menu = game[ "menu_weapon_" + val ];
+				self setClientCvar( "g_scriptMainMenu", menu );
+				self setClientCvar( level.ui_weapontab, "1" );
+				break;
+		  	}
+		  	break;
+		  case "weapon":
+			if ( ![[ level.gtd_call ]]( "isTeam",
+							self.pers[ "team" ] ) )
+			{
+				// No team selected yet?
+				menu = game[ "menu_team" ];
+				break;
+			}
+
+			if ( !self [[ level.gtd_call ]]( "isWeaponAllowed",
+									val ) )
+			{
+				self iprintln(
+					"^3*** Weapon has been disabled." );
+				break;
+			}
+
+			weapon = val;
+
+			if ( isdefined( self.pers[ "weapon" ] ) &&
+			     ( self.pers[ "weapon" ] == weapon ) )
+			{
+				menu = undefined;
+				break;	// Same weapon selected!
+			}
+
+			// Is the weapon available?
+			weapon = self [[ level.gtd_call ]]( "assignWeapon",
+									weapon );
+			if ( !isdefined( weapon ) )
+			{
+				self iprintln( "^3*** Weapon is unavailable." );
+				break;
+			}
+
+			menu = undefined;
+
+			if ( !isdefined( self.pers[ "weapon" ] ) )
+			{
+				// First selected weapon ...
+				self.pers[ "weapon" ] = weapon;
+				switch ( level.ham_g_gametype )
+				{
+				  case "hq":
+					self thread [[ level.gtd_call ]](
+								"gt_respawn" );
+					break;
+				  default:
+					self [[ level.gtd_call ]](
+							"gt_spawnPlayer" );
+					break;
+				}
+
+				self thread [[ level.gtd_call ]](
+							"printJoinedTeam",
+							 self.pers[ "team" ] );
+			}
+			else
+			{
+				// Already have a weapon, wait 'til next spawn
+				self.pers[ "weapon" ] = weapon;
+
+				// End of map will take care of storing player's
+				// new weapon.  Need this in case a map_restart
+				// is done.
+				self [[ level.gtd_call ]]( "savePlayer" );
+
+				if ( maps\mp\gametypes\_teams::useAn( weapon ) )
+					text = &"MPSCRIPT_YOU_WILL_RESPAWN_WITH_AN";
+				else
+					text = &"MPSCRIPT_YOU_WILL_RESPAWN_WITH_A";
+
+				weaponname = maps\mp\gametypes\_teams::getWeaponName( weapon );
+				self iprintln( text, weaponname );
+			}
+		  	break;
+		  case "menu":
+			if ( ( val == "weapon" ) &&
+		  	     isdefined( self.pers[ "team" ] ) )
+			  	menu = game[ "menu_weapon_" +
+			  				self.pers[ "team" ] ];
+		  	break;
+		  default:
+		  	menu = undefined;
+		  	break;
+		}
+	}
+}
+
+autoBalance( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
+			b0, b1, b2, b3, b4, b5, b6, b7, b8, b9 )
+{
+	level endon( "end_map" );
+
+	for (;;)
+	{
+		wait( 10 );
+
+		if ( level.teambalance > 0 )
+			thread codam\commander::procCmds( "eventeams" );
+	}
+
+	return;
 }
