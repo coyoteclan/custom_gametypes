@@ -140,9 +140,13 @@ gtRegister( register, post )
 	[[ register ]](     "PlayerDamage", codam\callbacks::PlayerDamage );
 	[[ register ]](     "PlayerKilled", ::PlayerKilled );
 
-	[[ register ]]( "finishPlayerKilled", codam\callbacks::finishPlayerKilled );
-	[[ register ]](       "gt_startGame", ::startGame );
-	[[ register ]](             "endMap", ::endMap );
+	[[ register ]](   "finishPlayerKilled", codam\callbacks::finishPlayerKilled );
+	[[ register ]](         "gt_startGame", ::startGame );
+	[[ register ]](               "endMap", ::endMap );
+	[[ register ]](       "gt_spawnPlayer", ::spawnPlayer );
+	[[ register ]](    "gt_spawnSpectator", ::spawnSpectator );
+	[[ register ]]( "gt_spawnIntermission", ::spawnIntermission );
+	[[ register ]](           "gt_respawn", ::respawn );
 }
 
 StartGameType( a0, a1, a2, a3, a4, a5, a6, a7, a8, a9,
