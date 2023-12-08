@@ -1,6 +1,12 @@
 main()
 {
-	spawnpointname = "mp_deathmatch_spawn";
+	codam\utils::_debug( "I'M IN C_GG" );
+	register = codam\init::main( ::gtRegister, "gg" );
+	[[ level.gtd_call ]]( "registerSpawn", "mp_deathmatch_spawn", "dm" );
+	level.QuickMessageToAll = true;
+	return;
+
+	/*spawnpointname = "mp_deathmatch_spawn";
 	spawnpoints = getentarray(spawnpointname, "classname");
 
 	if(!spawnpoints.size)
@@ -21,7 +27,7 @@ main()
 	maps\mp\gametypes\_callbacksetup::SetupCallbacks();
 
 	allowed[0] = "gg";
-	maps\mp\gametypes\_gameobjects::main(allowed);
+	maps\mp\gametypes\_gameobjects::main(allowed);*/
 
 	if(getCvar("scr_gg_timelimit") == "")		// Time limit per map
 		setCvar("scr_gg_timelimit", "30");
@@ -55,11 +61,58 @@ main()
 	level.healthqueuecurrent = 0;
 	
 	if(level.killcam >= 1)
-		setarchive(true);
+		setarchive(true);*/
 
 }
 
-Callback_StartGameType()
+gtRegister( register, post )
+{
+	// Since CoDaM treats the first registration of a callback as the
+	// ... "default" call, must ensure that gametype-specific functions
+	// ... are registered first during Init.
+
+	if ( isdefined( post ) )
+		return;
+
+	// Script-level	callbacks
+	[[ register ]](	   "StartGameType", ::StartGameType );
+	[[ register ]](	   "PlayerConnect", codam\callbacks::PlayerConnect );
+	[[ register ]](	"PlayerDisconnect", codam\callbacks::PlayerDisconnect );
+	[[ register ]](	    "PlayerDamage", codam\callbacks::PlayerDamage );
+	[[ register ]](	    "PlayerKilled", codam\callbacks::PlayerKilled );
+
+	// Game-type callbacks
+	[[ register ]](   "finishPlayerKilled",
+				codam\callbacks::finishPlayerKilled );
+	[[ register ]](	        "gt_startGame",
+				codam\GameTypes\_tdm::startGame );
+	[[ register ]](	      "gt_checkUpdate",
+				codam\GameTypes\_tdm::checkUpdate );
+	[[ register ]](            "gt_endMap",
+				codam\GameTypes\_tdm::endMap );
+	[[ register ]](          "gt_endRound",
+				codam\GameTypes\_tdm::endRound );
+	[[ register ]](       "gt_spawnPlayer",
+				codam\GameTypes\_tdm::spawnPlayer );
+	[[ register ]](    "gt_spawnSpectator",
+				codam\GameTypes\_tdm::spawnSpectator );
+	[[ register ]]( "gt_spawnIntermission",
+				codam\GameTypes\_tdm::spawnIntermission );
+	[[ register ]](		  "gt_respawn",
+				codam\GameTypes\_tdm::respawn );
+	[[ register ]](       "gt_menuHandler",
+				codam\GameTypes\_tdm::menuHandler );
+	[[ register ]](  "gt_timeLimitReached",
+				codam\GameTypes\_tdm::timeLimitReached );
+	[[ register ]]( "gt_scoreLimitReached",
+				codam\GameTypes\_tdm::scoreLimitReached );
+	[[ register ]](  "gt_playerScoreLimit",
+				codam\GameTypes\_tdm::playerScoreLimit );
+
+	return;
+}
+
+StartGameType()
 {
 	level.gg_requires_speed_reset = false;
 
